@@ -1,9 +1,9 @@
 use crossterm::{
-    event::{EnableMouseCapture, DisableMouseCapture},
-    terminal::{enable_raw_mode, disable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
-    execute
+    event::{DisableMouseCapture, EnableMouseCapture},
+    execute,
+    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
-use std::io;
+use std::{io, thread, time::Duration};
 use tui::{backend::CrosstermBackend, Terminal};
 
 fn main() -> Result<(), io::Error> {
@@ -13,7 +13,11 @@ fn main() -> Result<(), io::Error> {
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
 
-    // Draw
+    terminal.draw(|f| {
+        ptime::gui::ui(f);
+    })?;
+
+    thread::sleep(Duration::from_millis(5000));
 
     disable_raw_mode()?;
     execute!(
